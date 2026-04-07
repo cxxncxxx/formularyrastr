@@ -1,41 +1,42 @@
-<!DOCTYPE html>
-<html>
-<body>
-  <h2>Compartir ubicación en tiempo real</h2>
-  <button onclick="startTracking()">Iniciar</button>
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
 
-  <p id="status"></p>
+function startTracking() {
+  if (!navigator.geolocation) {
+    alert("Geolocalización no soportada");
+    return;
+  }
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-
-    function startTracking() {
-      if (!navigator.geolocation) {
-        alert("Geolocalización no soportada");
-        return;
-      }
-
-      navigator.geolocation.watchPosition(async (pos) => {
-        await fetch('/api/save-location', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    id,
-    lat: pos.coords.latitude,
-    lon: pos.coords.longitude
-  })
-});
-
-        document.getElementById("status").innerText =
-          "Enviando ubicación...";
-      }, () => {
-        document.getElementById("status").innerText =
-          "Permiso denegado";
+  navigator.geolocation.watchPosition(async (pos) => {
+    try {
+      await fetch('/api/save-location', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: id,
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude
+        })
       });
+
+      document.getElementById("status").innerText =
+        "Enviando ubicación...";
+        
+    } catch (e) {
+      document.getElementById("status").innerText =
+        "Error enviando datos";
     }
-  </script>
-</body>
-</html>
+
+  }, (err) => {
+    document.getElementById("status").innerText =
+      "Permiso denegado";
+  }, {
+    enableHighAccuracy: true,
+    maximumAge: 0,
+    timeout: 5000
+  });
+}
+</script>
