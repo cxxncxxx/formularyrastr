@@ -4,7 +4,7 @@ export default function handler(req, res) {
   global.links = global.links || {};
   global.links[id] = { locations: [] };
 
-  res.json({
+  res.status(200).json({
     link: `/track.html?id=${id}`,
     id
   });
