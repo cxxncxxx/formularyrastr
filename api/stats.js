@@ -4,8 +4,8 @@ export default function handler(req, res) {
   global.links = global.links || {};
 
   if (!global.links[id]) {
-    return res.status(404).json({ error: "No existe" });
+    return res.status(200).json({ locations: [] });
   }
 
-  res.json(global.links[id]);
+  res.status(200).json(global.links[id]);
 }
