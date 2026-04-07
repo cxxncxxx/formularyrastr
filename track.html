@@ -18,13 +18,16 @@
 
       navigator.geolocation.watchPosition(async (pos) => {
         await fetch('/api/save-location', {
-          method: 'POST',
-          body: JSON.stringify({
-            id,
-            lat: pos.coords.latitude,
-            lon: pos.coords.longitude
-          })
-        });
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    id,
+    lat: pos.coords.latitude,
+    lon: pos.coords.longitude
+  })
+});
 
         document.getElementById("status").innerText =
           "Enviando ubicación...";
