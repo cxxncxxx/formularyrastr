@@ -1,21 +1,22 @@
 export default async function handler(req, res) {
-  try {
-    const { id, lat, lon } = JSON.parse(req.body);
+  const { id, lat, lon } = JSON.parse(req.body);
 
-    global.links = global.links || {};
+  const SUPABASE_URL = "https://bxtzdxehpsyvziiqwpza.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_klwriPR0NcsJtlIqIj3TJA_7hebCQFd";
 
-    if (!global.links[id]) {
-      global.links[id] = { locations: [] };
-    }
-
-    global.links[id].locations.push({
+  await fetch(`${SUPABASE_URL}/rest/v1/locations`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`
+    },
+    body: JSON.stringify({
+      id,
       lat,
-      lon,
-      date: new Date().toISOString()
-    });
+      lon
+    })
+  });
 
-    res.status(200).json({ ok: true });
-  } catch (e) {
-    res.status(500).json({ error: "Error" });
-  }
+  res.status(200).json({ ok: true });
 }
