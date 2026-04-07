@@ -1,17 +1,21 @@
 export default async function handler(req, res) {
-  const { id, lat, lon } = JSON.parse(req.body);
+  try {
+    const { id, lat, lon } = JSON.parse(req.body);
 
-  global.links = global.links || {};
+    global.links = global.links || {};
 
-  if (!global.links[id]) {
-    return res.status(404).json({ error: "No existe" });
+    if (!global.links[id]) {
+      global.links[id] = { locations: [] };
+    }
+
+    global.links[id].locations.push({
+      lat,
+      lon,
+      date: new Date().toISOString()
+    });
+
+    res.status(200).json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: "Error" });
   }
-
-  global.links[id].locations.push({
-    lat,
-    lon,
-    date: new Date().toISOString()
-  });
-
-  res.json({ ok: true });
 }
