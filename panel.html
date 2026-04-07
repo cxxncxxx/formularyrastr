@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>Panel en vivo</h1>
+
+  <input id="id" placeholder="ID del link">
+  <button onclick="start()">Ver en vivo</button>
+
+  <pre id="data"></pre>
+
+  <script>
+    let interval;
+
+    function start() {
+      const id = document.getElementById("id").value;
+
+      interval = setInterval(async () => {
+        const res = await fetch(`/api/stats?id=${id}`);
+        const data = await res.json();
+
+        document.getElementById("data").innerText =
+          JSON.stringify(data.locations.slice(-5), null, 2);
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

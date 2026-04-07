@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h2>Compartir ubicación en tiempo real</h2>
+  <button onclick="startTracking()">Iniciar</button>
+
+  <p id="status"></p>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    function startTracking() {
+      if (!navigator.geolocation) {
+        alert("Geolocalización no soportada");
+        return;
+      }
+
+      navigator.geolocation.watchPosition(async (pos) => {
+        await fetch('/api/save-location', {
+          method: 'POST',
+          body: JSON.stringify({
+            id,
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude
+          })
+        });
+
+        document.getElementById("status").innerText =
+          "Enviando ubicación...";
+      }, () => {
+        document.getElementById("status").innerText =
+          "Permiso denegado";
+      });
+    }
+  </script>
+</body>
+</html>
